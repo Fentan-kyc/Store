@@ -3,7 +3,7 @@ import express from "express";
 
 import sequelize from './bd.js';
 import cors from 'cors';
-import models from './models/models.js';
+import * as models from './models/models.js';
 import router from './routes/index.js';
 import errorHandler from './middleware/ErrorHandlingMiddleware.js';
 
