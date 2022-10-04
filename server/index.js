@@ -6,12 +6,18 @@ import cors from 'cors';
 import * as models from './models/models.js';
 import router from './routes/index.js';
 import errorHandler from './middleware/ErrorHandlingMiddleware.js';
+import fileUpload from 'express-fileupload';
+import path from 'path';
+import {dirname} from 'path';
+import {fileURLToPath} from 'url';
 
 const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.resolve(dirname(fileURLToPath(import.meta.url)), 'static')));
+app.use(fileUpload({}))
 app.use('/api', router);
 
 
