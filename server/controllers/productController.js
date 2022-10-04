@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import path from 'path';
-import {Product} from '../models/models.js';
+import {Product, ProductInfo} from '../models/models.js';
 import ApiError from '../error/ApiError.js';
 import {dirname} from 'path';
 import {fileURLToPath} from 'url';
@@ -9,12 +9,23 @@ class ProductController{
 
     async create(req, res, next){
         try{
-        const {name, price, brandId, typeId, info} = req.body;
+        let {name, price, brandId, typeId, info} = req.body;
          const {img} = req.files;
          let fileName = uuid.v4() + '.jpg';
          img.mv(path.resolve(dirname(fileURLToPath(import.meta.url)), '..', 'static',fileName));
 
          const product = await Product.create({name,price,brandId,typeId, img:fileName});
+
+         if(info){
+            info = JSON.parse(info);
+            info.forEach(i=>
+                ProductInfo.create({
+                    title: i.title,
+                    desc: i.desc,
+                    productId: product.id
+                }))
+         }
+
 
          return res.json(product);
 
@@ -47,7 +58,14 @@ class ProductController{
     }
 
     async getById(req, res){
-
+        const {id} = req.params;
+        const product = await Product.findOne(
+            { 
+                where:{id},
+                include:[{model: ProductInfo, as: 'info'}]
+            },
+            )
+        return res.json(product)
     }
 
 }

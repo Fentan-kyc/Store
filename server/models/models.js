@@ -69,7 +69,7 @@ Rate.belongsTo(Product)
 Product.hasMany(BasketProduct)
 BasketProduct.belongsTo(Product)
 
-Product.hasMany(ProductInfo)
+Product.hasMany(ProductInfo, {as: 'info'})
 ProductInfo.belongsTo(Product)
 
 Type.belongsToMany(Brand, {through: TypeBrand})
